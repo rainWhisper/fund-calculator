@@ -1,18 +1,16 @@
-# fund-calc
+# 基金投入计算器
 
-> a fund calculator
+> 基金投入计算器
 
-## Build Setup
+## 构建部署
 
 ``` bash
-# install dependencies
+# 安装依赖
 npm install
 
-# serve with hot reload at localhost:8080
+# 运行开发环境
 npm run dev
 
-# build for production with minification
+# 打包文件
 npm run build
 ```
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
