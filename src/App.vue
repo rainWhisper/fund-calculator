@@ -22,7 +22,7 @@
                   <div class="read-content-wrap">
                     <b>当前价格：</b>
                     <span>{{fundCurrentPrice}}</span>
-                    <b>元</b>
+                    <b></b>
                   </div>
                 </el-col>
               </el-row>
@@ -42,15 +42,16 @@
                   <el-input v-model="fundPosition" placeholder="持仓"></el-input>
                 </el-col>
               </el-row>
-              <el-row :gutter="5">
-                <el-col :span="23">
-                  <div class="read-content-wrap">
+              <el-row :gutter="5" class="read-content-wrap">
+                  <el-col :span="12">
+                    <b>市值：</b>
+                    <span>{{mvalue}}</span>
+                  </el-col>
+                  <el-col :span="12">
                     <b>收益：</b>
                     <span>{{profit}}</span>
-                    <b>元</b>
-                    <i>{{percentage}}</i>
-                  </div>
-                </el-col>
+                    <i v-bind:class="isRiseClass">{{percentage}}</i>
+                  </el-col>
               </el-row>
             </div>
           </el-card>
@@ -72,7 +73,7 @@
                   <div class="read-content-wrap">
                     <b>本次应投：</b>
                     <span>{{investment}}</span>
-                    <b>元</b>
+                    <b>份</b>
                   </div>
                 </el-col>
               </el-row>
@@ -100,6 +101,11 @@ export default {
     }
   },
   computed: {
+   /** 市值 */
+    mvalue: function() {
+      let mvalue = this.fundCost * this.fundPosition;
+      return mvalue.toFixed(2);
+    },
     /** 收益 */
     profit: function() {
       let profitValue = (this.fundCurrentPrice - this.fundCost) * this.fundPosition;
@@ -115,10 +121,23 @@ export default {
         return null;
       }
     },
-    /** 应该投入的资金 */
+    /** 是否涨 */
+    isRiseClass: function() {
+      return {
+        'rise': (this.fundCost < this.fundCurrentPrice) && this.fundCost,
+        'fall': this.fundCost > this.fundCurrentPrice
+      }
+    },
+    /** 应该投入的份额 */
     investment: function() {
-      return null;
-    }
+      if(this.fundTarget && this.fundCurrentPrice && this.fundPosition) {
+        let _inves = (this.fundTarget - this.fundCurrentPrice * this.fundPosition) / this.fundCurrentPrice;
+        let inves = Math.round(_inves / 100) * 100;
+          return inves;
+        }else{
+          return null;
+        }
+      }
   },
   watch: {
     fundCode: function () {
@@ -170,6 +189,18 @@ export default {
     }
     i{
       font-style: normal;
+    }
+  }
+  .rise {
+    color: red;
+    &:after{
+      content: '↑'
+    }
+  }
+  .fall {
+    color: green;
+    &:after{
+      content: '↓'
     }
   }
 </style>
