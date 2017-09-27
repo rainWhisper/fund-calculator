@@ -108,7 +108,7 @@ export default {
     /** 投入收益百分比 */
     percentage: function() {
       if(this.fundCurrentPrice && this.fundCost) {
-        let currentPercentage = (this.fundCurrentPrice / this.fundCost) * 100;
+        let currentPercentage = ((this.fundCurrentPrice / this.fundCost) - 1) * 100;
         currentPercentage = currentPercentage.toFixed(2);
         return currentPercentage + "%";
       }else {
