@@ -88,6 +88,7 @@
 <script>
 import _ from 'lodash';
 import jsonp from 'jsonp';
+import axios from 'axios';
 export default {
   name: 'app',
   data () {
@@ -143,20 +144,14 @@ export default {
     fundCode: function () {
       // 只有当编号为6位时，才执行
       if(this.fundCode.length === 6) {
-        // 查阅对应的名字
-        jsonp(`http://quotes.money.163.com/stocksearch/json.do?type=FN&count=10&word=${this.fundCode}&t=${+new Date}`, (err, data) => {
-          if(data.length > 0){
-            this.fundName = data[0].name;
-          }
-        });
-        /** 获取当前金额 */
-        jsonp(`http://finance.sina.com.cn/fund/api/xh5Fund/nav/${this.fundCode}.js`, {
-          name: "xh5Fund"
-        }, (err, data) => {
-          if(err) return console.log(err);
-          /** 分解实时数据，获取最新数据 */
-          this.fundCurrentPrice = data.data.split("#")[0].split(",")[1];
-        })
+        axios.get(`http://api.thisjs.com/fund/${this.fundCode}`)
+            .then(res => {
+              const data = res.data;
+              if(data.success === true) {
+                this.fundName = data.name;
+                this.fundCurrentPrice = data.dwjz;
+              }
+            })
       }else{
         this.fundName = "";
         this.fundCurrentPrice = "";
