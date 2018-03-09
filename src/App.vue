@@ -4,7 +4,7 @@
       <el-col :sm="24" :md="{span: 12, offset: 6}">
         <div class="grid-content">
           <!-- 基金输入栏信息 -->
-          <el-card class="box-card card-wrap fund-card" :body-style="{padding: '7.5px'}">
+          <el-card v-loading="loading" class="box-card card-wrap fund-card" :body-style="{padding: '7.5px'}">
             <div slot="header">
               <span>基金</span>
             </div>
@@ -87,12 +87,12 @@
 
 <script>
 import _ from 'lodash';
-import jsonp from 'jsonp';
 import axios from 'axios';
 export default {
   name: 'app',
   data () {
     return {
+      loading: false,
       fundCode: "",  // 基金代码
       fundName: "",  // 基金名称
       fundCurrentPrice: "",  // 基金当前金额
@@ -144,14 +144,19 @@ export default {
     fundCode: function () {
       // 只有当编号为6位时，才执行
       if(this.fundCode.length === 6) {
+        this.loading = true;
         axios.get(`http://api.thisjs.com/fund/${this.fundCode}`)
             .then(res => {
               const data = res.data;
               if(data.success === true) {
                 this.fundName = data.name;
-                this.fundCurrentPrice = data.dwjz;
+                this.fundCurrentPrice = data["dwjz"];
               }
+              this.loading = false;
             })
+        setTimeout(() => {
+          this.loading = false;
+        }, 5000)
       }else{
         this.fundName = "";
         this.fundCurrentPrice = "";
